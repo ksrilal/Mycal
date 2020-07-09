@@ -1,3 +1,6 @@
+/* eslint-disable no-eval */
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
@@ -6,15 +9,21 @@ export default class App extends Component {
     super();
     this.state = {
       resultText: '',
+      calculationText: '',
     };
+    this.operators = ['Del', '+', '-', '*', '/'];
   }
 
   calculateResult() {
     const temp = this.state.resultText;
+    //වන් බෙ ගු ධ රි
+    this.setState({
+      calculationText: eval(temp),
+    });
   }
 
   btnPressed(value) {
-    console.log(value);
+    //console.log(value);
     if (value == '=') {
       return this.calculateResult();
     } else {
@@ -25,12 +34,27 @@ export default class App extends Component {
   }
 
   operate(operation) {
-    switch(operation) {
+    switch (operation) {
       case 'Del':
         let text = this.state.resultText.split('');
         text.pop();
         this.setState({
           resultText: text.join(''),
+        });
+        break;
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        const lastChar = this.state.resultText.split('').pop();
+        if (this.operators.indexOf(lastChar) > 0) {
+          return;
+        }
+        if (this.state.resultText == '') {
+          return;
+        }
+        this.setState({
+          resultText: this.state.resultText + operation,
         });
     }
   }
@@ -58,13 +82,12 @@ export default class App extends Component {
     }
 
     let operatorRow = [];
-    let operators = ['Del', '+', '-', '*', '/'];
     for (let i = 0; i < 5; i++) {
       operatorRow.push(
         <TouchableOpacity
-          onPress={() => this.operate(operators[i])}
+          onPress={() => this.operate(this.operators[i])}
           style={styles.btn}>
-          <Text style={styles.btnOperator}>{operators[i]}</Text>
+          <Text style={styles.btnOperator}>{this.operators[i]}</Text>
         </TouchableOpacity>,
       );
     }
@@ -75,7 +98,9 @@ export default class App extends Component {
           <Text style={styles.resultText}>{this.state.resultText}</Text>
         </View>
         <View style={styles.calculation}>
-          <Text style={styles.calculationText}>121</Text>
+          <Text style={styles.calculationText}>
+            {this.state.calculationText}
+          </Text>
         </View>
         <View style={styles.buttons}>
           <View style={styles.numbers}>{btnRows}</View>
@@ -117,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   resultText: {
-    fontSize: 40,
+    fontSize: 45,
     color: '#1E90FF',
   },
   calculation: {
@@ -127,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   calculationText: {
-    fontSize: 26,
+    fontSize: 35,
     color: '#1E90FF',
   },
   buttons: {
