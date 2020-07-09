@@ -1,6 +1,3 @@
-/* eslint-disable no-eval */
-/* eslint-disable no-unused-vars */
-/* eslint-disable eqeqeq */
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
@@ -16,16 +13,29 @@ export default class App extends Component {
 
   calculateResult() {
     const temp = this.state.resultText;
-    //වන් බෙ ගු ධ රි
+    //වන් බෙ ගු ධ රි -> js has eval()
     this.setState({
       calculationText: eval(temp),
     });
   }
 
+  validation() {
+    const temp = this.state.resultText;
+    //console.log(temp.slice(-1));
+    switch (temp.slice(-1)) {
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        return false;
+    }
+    return true;
+  }
+
   btnPressed(value) {
     //console.log(value);
     if (value == '=') {
-      return this.calculateResult();
+      return this.validation() && this.calculateResult();
     } else {
       this.setState({
         resultText: this.state.resultText + value,
